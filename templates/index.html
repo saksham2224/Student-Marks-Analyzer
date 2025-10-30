@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Interactive Student Marks Analyzer</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #f6f9fc, #eaf1f9);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+    }
+    .card {
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(30, 61, 89, 0.08);
+      border: none;
+      background: #fff;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 22px rgba(30, 61, 89, 0.15);
+    }
+    .header {
+      color: #1e3d59;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .accent {
+      color: #ff6e40;
+    }
+    .student-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .small-input {
+      flex: 1 1 90px;
+      min-width: 80px;
+    }
+    .name-input {
+      flex: 1 1 130px;
+      min-width: 100px;
+    }
+    .btn {
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+    footer {
+      margin-top: 50px;
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    /* Responsive Fixes */
+    @media (max-width: 768px) {
+      .card {
+        padding: 1.5rem !important;
+      }
+      .student-row input {
+        flex: 1 1 45%;
+      }
+      .name-input {
+        flex: 1 1 100%;
+      }
+      .d-flex.gap-2.mt-3 {
+        flex-wrap: wrap;
+      }
+      .btn.ms-auto {
+        margin-left: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  {% include 'navbar.html' %}
+
+  <div class="container py-5">
+    <div class="row mb-4">
+      <div class="col-md-8 mx-auto text-center">
+        <h1 class="header mb-3">Student Marks Analyzer</h1>
+        <p class="lead">Upload a CSV or enter student marks manually. Click <span class="accent">Analyze</span> to view full report & graphs.</p>
+      </div>
+    </div>
+    <!-- Hero Section -->
+<section style="position:relative; overflow:hidden; padding:80px 20px; background: linear-gradient(135deg,#eef2f7,#dbe9f4); border-radius:12px; margin-bottom:40px;">
+  <!-- Background images/shapes -->
+  <!-- <img src="owk8QH.jpg" style="position:absolute; top:-20px; left:-20px; width:120px; opacity:0.2;">
+  <img src="owk8QH.jpg" style="position:absolute; bottom:-20px; right:-20px; width:150px; opacity:0.15;"> -->
+  <img src="{{ url_for('static', filename='images/owk8QH.jpg') }}" style="position:absolute; top:-20px; left:-20px; width:320px; opacity:0.5;">
+    <img src="{{ url_for('static', filename='images/4.jpg') }}" style="position:absolute; bottom:-20px; right:-20px; width:300px; opacity:0.5;">
+  
+  <div class="container text-center">
+    <!-- <h1 style="font-size:2.5rem; color:#1e3d59; font-weight:700; margin-bottom:20px;">Student Marks Analyzer</h1> -->
+    <p style="font-size:1.1rem; max-width:700px; margin:auto; color:#33475b; line-height:1.6;">
+      Welcome! This tool helps students, teachers, and parents analyze academic performance with ease. 
+      Upload your CSV files or enter marks manually, and get **detailed reports, charts, and insights** instantly. 
+      Monitor trends, compare subjects, and make data-driven decisions for better learning outcomes.
+    </p>
+    <a href="#manualForm" class="btn btn-primary mt-4" style="padding:12px 30px; font-size:1rem; border-radius:8px;">Get Started</a>
+  </div>
+</section>
+
+
+    <div class="row g-4">
+      <!-- Upload Card -->
+      <div class="col-lg-6">
+        <div class="card p-4 h-100">
+          <h5 class="mb-3 fw-semibold text-primary">1) Upload CSV (Optional)</h5>
+          <form method="POST" enctype="multipart/form-data">
+            <form method="POST" enctype="multipart/form-data" id="uploadForm">
+            <div class="mb-3">
+              <input class="form-control" type="file" name="csv_file" accept=".csv" id="csvFileInput" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="analyzeBtn" disabled>Analyze Uploaded CSV</button>
+          </form>
+           
+          <small class="d-block mt-3 text-muted">
+            CSV columns must match: 
+            <code>Name, Math, Physics, Chemistry, English, Computer</code> (StudentID optional)
+          </small>
+        </div>
+      </div>
+
+      <!-- Manual Entry Card -->
+      <div class="col-lg-6">
+        <div class="card p-4 h-100">
+          <h5 class="mb-3 fw-semibold text-success">2) Or Enter Data Manually</h5>
+          <form method="POST" id="manualForm">
+            <div id="studentsList" class="d-grid gap-3">
+              <div class="student-row">
+                <input class="form-control name-input" type="text" name="name" placeholder="Name" required>
+                <input class="form-control small-input" type="number" name="math" min="0" max="100" placeholder="Math" required>
+                <input class="form-control small-input" type="number" name="physics" min="0" max="100" placeholder="Physics" required>
+                <input class="form-control small-input" type="number" name="chemistry" min="0" max="100" placeholder="Chemistry" required>
+                <input class="form-control small-input" type="number" name="english" min="0" max="100" placeholder="English" required>
+                <input class="form-control small-input" type="number" name="computer" min="0" max="100" placeholder="Computer" required>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+              <button type="button" class="btn btn-outline-secondary flex-fill" onclick="addStudentRow()">➕ Add Student</button>
+              <button type="button" class="btn btn-outline-danger flex-fill" onclick="removeStudentRow()">➖ Remove Last</button>
+              <button type="submit" class="btn btn-success ms-auto flex-fill">📊 Analyze Data</button>
+            </div>
+          </form>
+
+          <small class="d-block mt-3 text-muted">
+            Use the buttons to add or remove rows. Keep marks between 0–100.
+          </small>
+        </div>
+      </div>
+    </div>
+
+    
+
+      
+
+
+  
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    function addStudentRow() {
+      const container = document.getElementById('studentsList');
+      const div = document.createElement('div');
+      div.className = 'student-row';
+      div.innerHTML = `
+        <input class="form-control name-input" type="text" name="name" placeholder="Name" required>
+        <input class="form-control small-input" type="number" name="math" min="0" max="100" placeholder="Math" required>
+        <input class="form-control small-input" type="number" name="physics" min="0" max="100" placeholder="Physics" required>
+        <input class="form-control small-input" type="number" name="chemistry" min="0" max="100" placeholder="Chemistry" required>
+        <input class="form-control small-input" type="number" name="english" min="0" max="100" placeholder="English" required>
+        <input class="form-control small-input" type="number" name="computer" min="0" max="100" placeholder="Computer" required>
+      `;
+      container.appendChild(div);
+    }
+
+    function removeStudentRow() {
+      const container = document.getElementById('studentsList');
+      if (container.children.length > 1) container.removeChild(container.lastChild);
+    }
+  </script>
+  <script>
+  const fileInput = document.getElementById('csvFileInput');
+  const analyzeBtn = document.getElementById('analyzeBtn');
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length > 0) {
+      analyzeBtn.disabled = false;  
+    } else {
+      analyzeBtn.disabled = true;  
+    }
+  });
+</script>
+{% include 'footer.html' %}
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!-- templates/navbar.html -->
+<style>
+  /* Navbar Gradient Background */
+  .navbar-custom {
+    background: linear-gradient(135deg, #1e3d59, #2a5d84);
+  }
+
+  /* Navbar Links */
+  .navbar-custom .nav-link {
+    color: #ffffff;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  .navbar-custom .nav-link:hover {
+    color: #ff6e40;
+  }
+
+  /* Login / Signup Buttons */
+  .navbar-custom .btn-login {
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    transition: all 0.3s;
+  }
+  .navbar-custom .btn-login:hover {
+    background: #ffffff;
+    color: #1e3d59;
+  }
+
+  .navbar-custom .btn-signup {
+    background: #ff6e40;
+    color: #ffffff;
+    transition: all 0.3s;
+  }
+  .navbar-custom .btn-signup:hover {
+    background: #ff4500;
+  }
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-custom">
+  <div class="container">
+    <!-- Brand / Logo -->
+    <a class="navbar-brand fw-bold text-white" href="#">Student Analyzer</a>
+
+    <!-- Hamburger button for mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar Links -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{{ url_for('index') }}">Home</a>
+        </li>
+        <li class="nav-item">
+       <a class="nav-link" href="{{ url_for('how_it_works') }}">How It Works</a>
+
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('index') }}">About Us</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('index') }}">Contact</a>
+        </li>
+        <!-- Login / Signup Buttons -->
+        <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+          <a href="#login" class="btn btn-login btn-sm">Login</a>
+        </li>
+        <li class="nav-item ms-2 mt-2 mt-lg-0">
+          <a href="#signup" class="btn btn-signup btn-sm">Sign Up</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
